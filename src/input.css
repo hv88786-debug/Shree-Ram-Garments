@@ -1,3 +1,101 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* ==========================================================================
+   Shree Ram Garments - premium polish layer
+   Plain CSS (not inside @layer) so it is always emitted, after the utilities.
+   Motion uses only transform / opacity. Everything is disabled under
+   prefers-reduced-motion at the bottom of this file.
+   ========================================================================== */
+
+:root { --srg-ease: cubic-bezier(.22, .61, .36, 1); --topbar-h: 0px; }
+
+html { scroll-padding-top: 7rem; }
+body { overflow-x: clip; }
+h1, h2, h3 { text-wrap: balance; }
+p { text-wrap: pretty; }
+a, button { -webkit-tap-highlight-color: transparent; }
+
+/* ---- Navbar (fixed header; the slim announcement bar slides away on scroll,
+        so the page never shifts) ---- */
+header.fixed {
+  transition: transform .35s var(--srg-ease), box-shadow .35s ease;
+  will-change: transform;
+}
+header.fixed.srg-scrolled {
+  transform: translateY(calc(var(--topbar-h) * -1));
+  box-shadow: 0 8px 24px -10px rgba(77, 0, 12, .22);
+}
+header nav[data-active-classes] a { position: relative; transition: color .25s ease, background-color .25s ease; }
+header nav[data-active-classes] a::after {
+  content: ""; position: absolute; left: .5rem; right: .5rem; bottom: 2px; height: 1px;
+  background: #775a19; transform: scaleX(0); transform-origin: left center;
+  transition: transform .3s var(--srg-ease);
+}
+header nav[data-active-classes] a:hover::after,
+header nav[data-active-classes] a:focus-visible::after { transform: scaleX(1); }
+header nav[data-active-classes] a[aria-current]::after { display: none; }
+
+#mobile-nav { max-height: calc(100vh - 7rem); max-height: calc(100dvh - 7rem); overflow-y: auto; overscroll-behavior: contain; }
+#mobile-nav:not(.hidden) { animation: srg-drop .22s var(--srg-ease) backwards; }
+@keyframes srg-drop { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+#mobile-nav a { transition: color .2s ease, padding-left .25s var(--srg-ease); }
+#mobile-nav a:active { padding-left: .5rem; }
+
+/* ---- Buttons & controls ---- */
+a[class*="rounded-lg"], a[class*="rounded-xl"], button {
+  transition: background-color .25s ease, color .25s ease, border-color .25s ease,
+              box-shadow .25s ease, transform .2s var(--srg-ease);
+}
+@media (hover: hover) {
+  a[href^="https://wa.me"]:not([aria-label="Chat on WhatsApp"]):hover {
+    transform: translateY(-1px); box-shadow: 0 8px 18px -8px rgba(37, 160, 90, .55);
+  }
+  a[class*="bg-primary-container"]:hover { box-shadow: 0 8px 18px -10px rgba(77, 0, 12, .5); }
+}
+a[href^="https://wa.me"]:not([aria-label="Chat on WhatsApp"]):active,
+a[class*="rounded-lg"]:active, a[class*="rounded-xl"]:active, button:active { transform: scale(.97); }
+
+input, select { transition: border-color .2s ease, box-shadow .2s ease, background-color .2s ease; }
+input:focus, select:focus { border-color: #700f1c; box-shadow: 0 0 0 3px rgba(119, 90, 25, .18); }
+#category-chips button { scroll-snap-align: start; }
+#category-chips { scroll-snap-type: x proximity; -webkit-overflow-scrolling: touch; }
+
+/* ---- Product cards (hover effects only where a hover device exists) ---- */
+.srg-card {
+  transition: box-shadow .35s var(--srg-ease), transform .35s var(--srg-ease), border-color .35s ease;
+  animation: srg-card-in .5s var(--srg-ease) backwards;
+}
+.srg-card .srg-img { transition: transform .7s var(--srg-ease); will-change: transform; }
+.srg-card:nth-child(2) { animation-delay: .04s; } .srg-card:nth-child(3) { animation-delay: .08s; }
+.srg-card:nth-child(4) { animation-delay: .12s; } .srg-card:nth-child(5) { animation-delay: .16s; }
+.srg-card:nth-child(6) { animation-delay: .20s; } .srg-card:nth-child(7) { animation-delay: .24s; }
+.srg-card:nth-child(n+8) { animation-delay: .28s; }
+@keyframes srg-card-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+@media (hover: hover) {
+  .srg-card:hover { transform: translateY(-3px); border-color: rgba(119, 90, 25, .38); box-shadow: 0 16px 32px -14px rgba(112, 15, 28, .26); }
+  .srg-card:hover .srg-img { transform: scale(1.04); }
+}
+@media (hover: none) { .srg-card:active { transform: scale(.985); } }
+
+/* ---- Section rhythm ---- */
+@media (min-width: 768px) {
+  main > div > section.py-space-xl { padding-top: 4rem; padding-bottom: 4rem; }
+}
+main > div > section + section:not(#contact)::before {
+  content: ""; position: absolute; top: 0; left: 50%; width: min(88%, 72rem); height: 1px;
+  transform: translateX(-50%); pointer-events: none;
+  background: linear-gradient(90deg, transparent, rgba(119, 90, 25, .38), transparent);
+}
+
+/* ---- Scroll reveal (class added by assets/site.js only to below-the-fold sections) ---- */
+.srg-reveal-ready .srg-reveal { transition: opacity .7s var(--srg-ease), transform .7s var(--srg-ease); }
+.srg-reveal-ready .srg-reveal:not(.is-in) { opacity: 0; transform: translateY(18px); }
+
+/* ---- Reduced motion ---- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  .srg-reveal-ready .srg-reveal:not(.is-in) { opacity: 1; transform: none; }
+  header.fixed.srg-scrolled { transform: none; }
+}

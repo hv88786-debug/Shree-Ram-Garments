@@ -21,3 +21,7 @@ Tailwind is **compiled at build time** (no `cdn.tailwindcss.com` at runtime - th
 
 Local: `npm install && npm run build`, then open `dist/index.html`.
 Vercel: Framework Preset = Other, Root Directory = the folder containing `package.json`; settings are read from `vercel.json`.
+
+### UX layer
+- `src/input.css` - Tailwind entry + the "polish" CSS (navbar, buttons, product-card hover, reveal, reduced-motion)
+- `assets/site.js` - sticky-header state, mobile-menu close behaviour, section reveal (all IntersectionObserver based)

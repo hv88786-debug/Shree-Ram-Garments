@@ -76,7 +76,7 @@
     var b = e.target.closest('button[data-cat]'); if (!b) return;
     state.cat = b.dataset.cat; state.sub = '';
     renderChips(); renderSubs(); render();
-    var nb = chipsEl.querySelector('[data-cat="' + state.cat + '"]'); if (nb) nb.focus();
+    var nb = chipsEl.querySelector('[data-cat="' + state.cat + '"]'); if (nb) nb.focus({ preventScroll: true });
   });
   subSel.addEventListener('change', function () { state.sub = subSel.value; render(); });
   sortSel.addEventListener('change', function () { state.sort = sortSel.value; render(); });

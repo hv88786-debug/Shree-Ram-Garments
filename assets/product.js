@@ -16,8 +16,8 @@
 
   var related = S.PRODUCTS.filter(function (r) { return r.category === p.category && r.id !== p.id; }).slice(0, 4);
   var relatedHtml = related.map(function (r) {
-    return '<a href="' + S.productUrl(r) + '" class="group block bg-surface-container-lowest rounded-xl overflow-hidden border border-secondary/15 hover:shadow-[0_8px_24px_-4px_rgba(112,15,28,0.12)] transition-shadow">' +
-      '<div class="relative w-full aspect-[3/4] bg-surface-container overflow-hidden">' + S.imageHtml(r, 'group-hover:scale-105 transition-transform duration-500') + '</div>' +
+    return '<a href="' + S.productUrl(r) + '" class="srg-card group block bg-surface-container-lowest rounded-xl overflow-hidden border border-secondary/15">' +
+      '<div class="relative w-full aspect-[3/4] bg-surface-container overflow-hidden">' + S.imageHtml(r, 'srg-img') + '</div>' +
       '<div class="p-3"><p class="font-headline-sm text-[15px] leading-snug text-primary font-semibold">' + S.esc(r.name) + '</p><p class="font-price-display text-price-display text-primary mt-1">' + S.formatPrice(r.price) + '</p></div></a>';
   }).join('');
 

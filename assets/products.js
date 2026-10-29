@@ -120,7 +120,7 @@
   }
   function imageHtml(p, extraClass) {
     if (!p.image) return placeholderHtml(p);
-    return '<img src="' + esc(p.image) + '" alt="' + esc(p.name) + '" loading="lazy" data-pid="' + esc(p.id) + '" class="absolute inset-0 w-full h-full object-cover ' + (extraClass || '') + '">';
+    return '<img src="' + esc(p.image) + '" alt="' + esc(p.name) + '" loading="lazy" decoding="async" data-pid="' + esc(p.id) + '" class="absolute inset-0 w-full h-full object-cover ' + (extraClass || '') + '">';
   }
   // Swap any image that fails to load for the placeholder.
   function attachImageFallback(root) {
@@ -140,9 +140,9 @@
   var WA_ICON = '<svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor" aria-hidden="true"><path d="M12.04 2a9.9 9.9 0 0 0-8.5 14.9L2 22l5.27-1.38A9.9 9.9 0 1 0 12.04 2Zm5.8 14.1c-.25.7-1.45 1.33-2 1.4-.52.07-1.17.1-1.9-.12a17 17 0 0 1-1.72-.63c-3.03-1.31-5-4.36-5.15-4.56-.15-.2-1.23-1.64-1.23-3.13 0-1.49.78-2.22 1.06-2.52.27-.3.6-.38.8-.38h.57c.18 0 .43-.07.67.51.25.6.85 2.07.92 2.22.08.15.13.33.03.53-.1.2-.15.32-.3.5-.15.17-.31.38-.45.51-.15.15-.3.31-.13.6.17.3.77 1.27 1.65 2.05 1.13 1 2.09 1.32 2.39 1.47.3.15.47.12.65-.07.17-.2.75-.87.95-1.17.2-.3.4-.25.67-.15.28.1 1.76.83 2.06.98.3.15.5.22.57.35.08.12.08.72-.17 1.42Z"/></svg>';
   function cardHtml(p) {
     var cat = categoryOf(p.category), url = productUrl(p);
-    return '<article class="group flex flex-col bg-surface-container-lowest rounded-xl overflow-hidden border border-secondary/15 shadow-sm hover:shadow-[0_8px_24px_-4px_rgba(112,15,28,0.12)] transition-shadow duration-300">' +
+    return '<article class="srg-card group flex flex-col bg-surface-container-lowest rounded-xl overflow-hidden border border-secondary/15 shadow-sm">' +
       '<a href="' + url + '" class="relative block w-full aspect-[3/4] overflow-hidden bg-surface-container" aria-label="View details: ' + esc(p.name) + '" tabindex="-1">' +
-        imageHtml(p, 'group-hover:scale-105 transition-transform duration-500') +
+        imageHtml(p, 'srg-img') +
         (p.badge ? '<span class="absolute top-2 left-2 px-2 py-0.5 rounded text-[10px] sm:text-[11px] font-bold uppercase tracking-wider ' + (BADGE_CLS[p.badge] || 'bg-primary text-on-primary') + '">' + esc(p.badge) + '</span>' : '') +
       '</a>' +
       '<div class="p-3 sm:p-4 flex flex-col flex-1 gap-2">' +
