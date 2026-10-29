@@ -9,3 +9,15 @@ Static site (Tailwind via CDN). Open `index.html` in a browser (internet needed 
 - `assets/shop.js`, `assets/product.js`, `assets/home.js` - page logic
 
 All names, prices and photos are demo placeholders until real inventory is supplied.
+
+## Build & deploy (Vercel)
+
+Tailwind is **compiled at build time** (no `cdn.tailwindcss.com` at runtime - that script is development-only and breaks in production when blocked/slow).
+
+- `tailwind.config.js` - theme (maroon/cream/gold tokens), scans `*.html` and `assets/**/*.js`
+- `src/input.css` - Tailwind entry file
+- `build.mjs` - compiles CSS and copies the site into `dist/`
+- `vercel.json` - build command `npm run build`, output directory `dist`
+
+Local: `npm install && npm run build`, then open `dist/index.html`.
+Vercel: Framework Preset = Other, Root Directory = the folder containing `package.json`; settings are read from `vercel.json`.
