@@ -225,6 +225,8 @@ module.exports = {
     "./index.html",
     "./shop.html",
     "./product.html",
-    "./assets/**/*.js"
+    "./assets/**/*.js",
+    "./admin/**/*.html",
+    "./src/admin/**/*.js"
   ]
 };

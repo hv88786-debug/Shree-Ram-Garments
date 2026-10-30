@@ -2,13 +2,18 @@
   "name": "shree-ram-garments-site",
   "version": "1.0.0",
   "private": true,
-  "description": "Shree Ram Garments static website (Tailwind compiled at build time)",
+  "description": "Shree Ram Garments website + admin panel (Tailwind compiled at build time, Supabase backend)",
   "scripts": {
     "build:css": "tailwindcss -c tailwind.config.js -i src/input.css -o assets/styles.css --minify",
     "build": "node build.mjs",
-    "dev:css": "tailwindcss -c tailwind.config.js -i src/input.css -o assets/styles.css --watch"
+    "dev:css": "tailwindcss -c tailwind.config.js -i src/input.css -o assets/styles.css --watch",
+    "seed:generate": "node supabase/tools/generate-seed.mjs"
   },
   "devDependencies": {
+    "esbuild": "0.25.0",
     "tailwindcss": "3.4.17"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "2.49.4"
   }
 }

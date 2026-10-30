@@ -1,0 +1,52 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Shree Ram Garments - admin panel components (maroon / cream / antique gold). */
+:root { color-scheme: light; }
+html, body { margin: 0; padding: 0; }
+body {
+  background: #faf7f2; color: #261a1a;
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif; font-size: 14px; line-height: 20px;
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3 { font-family: 'Playfair Display', Georgia, serif; }
+.material-symbols-outlined { font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24; user-select: none; }
+:focus-visible { outline: 2px solid #775a19; outline-offset: 2px; }
+
+@layer components {
+  .card { @apply bg-white border border-[#e8dece] rounded-xl shadow-[0_1px_2px_rgba(112,15,28,0.04)]; }
+  .card-pad { @apply p-4 sm:p-6; }
+  .btn { @apply inline-flex items-center justify-center gap-2 min-h-[40px] px-4 rounded-lg border border-transparent font-semibold text-[13px] tracking-wide transition-colors disabled:opacity-50 disabled:cursor-not-allowed select-none; }
+  .btn-primary { @apply btn bg-primary-container text-white hover:bg-primary; }
+  .btn-gold { @apply btn bg-secondary-container text-on-secondary-container hover:bg-secondary-fixed-dim; }
+  .btn-ghost { @apply btn bg-white border-[#d9cbb3] text-primary-container hover:bg-surface-container-low; }
+  .btn-danger { @apply btn bg-white border-error/40 text-error hover:bg-error-container; }
+  .btn-danger-solid { @apply btn bg-error text-white hover:bg-[#93000a]; }
+  .btn-sm { @apply min-h-[32px] px-3 text-[12px]; }
+  .btn-icon { @apply inline-flex items-center justify-center w-9 h-9 rounded-lg text-on-surface-variant hover:bg-surface-container hover:text-primary-container transition-colors disabled:opacity-40; }
+  .label { @apply block text-[11px] font-bold uppercase tracking-[0.08em] text-on-surface-variant mb-1; }
+  .input { @apply block w-full min-h-[40px] px-3 py-2 rounded-lg bg-white border border-[#d9cbb3] text-on-surface placeholder:text-outline/70 transition-colors; }
+  .input:focus { @apply border-primary-container outline-none; box-shadow: 0 0 0 3px rgba(119, 90, 25, .18); }
+  .input[aria-invalid="true"] { @apply border-error; }
+  .hint { @apply text-[12px] text-on-surface-variant mt-1; }
+  .field-error { @apply text-[12px] text-error mt-1 font-medium; }
+  .badge { @apply inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-bold tracking-wide; }
+  .badge-ok { @apply badge bg-[#e3f4e8] text-[#1b6b3a]; }
+  .badge-warn { @apply badge bg-[#fff1d0] text-[#7a5200]; }
+  .badge-bad { @apply badge bg-error-container text-on-error-container; }
+  .badge-muted { @apply badge bg-surface-container text-on-surface-variant; }
+  .badge-gold { @apply badge bg-secondary-container text-on-secondary-container; }
+  .nav-link { @apply flex items-center gap-3 px-3 min-h-[44px] rounded-lg text-[#f3dcdc] hover:bg-white/10 transition-colors font-semibold; }
+  .nav-link[aria-current="page"] { @apply bg-white/15 text-white; box-shadow: inset 3px 0 0 #e9c176; }
+  .th { @apply text-left text-[11px] font-bold uppercase tracking-[0.08em] text-on-surface-variant px-3 py-2 bg-surface-container-low; }
+  .td { @apply px-3 py-3 border-t border-[#efe6d6] align-middle; }
+  .switch { @apply relative inline-flex w-11 h-6 shrink-0 rounded-full bg-[#d9cbb3] transition-colors cursor-pointer; }
+  .switch[aria-checked="true"] { @apply bg-primary-container; }
+  .switch::after { content: ""; @apply absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform; }
+  .switch[aria-checked="true"]::after { transform: translateX(20px); }
+  .chip { @apply inline-flex items-center gap-1 pl-3 pr-1 min-h-[32px] rounded-full bg-surface-container text-primary-container font-semibold text-[13px] border border-[#e8dece]; }
+  .skeleton { @apply animate-pulse bg-[#efe6d6] rounded; }
+}
+
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }

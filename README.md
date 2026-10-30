@@ -1,14 +1,18 @@
 # Shree Ram Garments website
 
-Static site (Tailwind via CDN). Open `index.html` in a browser (internet needed for Tailwind, Google Fonts and the existing images).
+Static site + admin panel (Tailwind compiled at build time, Supabase backend).
 
-- `index.html` - homepage (product sections are filled from `assets/products.js`)
+**Admin panel + Supabase backend: see [SETUP.md](SETUP.md)** (step-by-step for Windows PowerShell).
+
+- `index.html` - homepage (hero, banners and product sections are filled from Supabase)
 - `shop.html` - All Products (category, type, search, price range, sort)
-- `product.html?id=PRODUCT_ID` - product details
-- `assets/products.js` - ALL product data and the WhatsApp number (917976399389). Edit here to add/remove/update products or set `image: 'assets/images/x.jpg'`.
+- `product.html?id=PRODUCT_SLUG` - product details with size/colour pickers
+- `assets/products.js` - data layer: reads the shared database; shows demo data only when Supabase is not configured
+- `assets/demo-data.js` - demo catalogue (fallback + source for `supabase/seed.sql`)
 - `assets/shop.js`, `assets/product.js`, `assets/home.js` - page logic
+- `admin/`, `src/admin/` - the admin panel; `supabase/` - SQL migrations
 
-All names, prices and photos are demo placeholders until real inventory is supplied.
+Products are no longer edited in a JavaScript file - use `/admin/`.
 
 ## Build & deploy (Vercel)
 
@@ -19,7 +23,8 @@ Tailwind is **compiled at build time** (no `cdn.tailwindcss.com` at runtime - th
 - `build.mjs` - compiles CSS and copies the site into `dist/`
 - `vercel.json` - build command `npm run build`, output directory `dist`
 
-Local: `npm install && npm run build`, then open `dist/index.html`.
+Local: copy `.env.example` to `.env`, fill in the two Supabase values, then `npm install && npm run build` and `npx serve dist`.
+Vercel: also add `SUPABASE_URL` and `SUPABASE_ANON_KEY` as environment variables.
 Vercel: Framework Preset = Other, Root Directory = the folder containing `package.json`; settings are read from `vercel.json`.
 
 ### UX layer

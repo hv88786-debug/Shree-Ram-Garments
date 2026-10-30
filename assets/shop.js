@@ -8,11 +8,13 @@
   var minIn = $('min-price'), maxIn = $('max-price'), clearBtns = document.querySelectorAll('[data-clear]');
   var searchIn = $('search-input');
   var state = { cat: 'all', sub: '', sort: 'featured', min: '', max: '', q: '' };
+  var wired = false;
+  function knownCat(id) { return S.CATEGORIES.some(function (c) { return c.id === id; }); }
 
   function readUrl() {
     var q = new URLSearchParams(location.search);
     var cat = q.get('cat');
-    state.cat = (cat === 'all' || S.categoryOf(cat)) ? cat : 'all';
+    state.cat = (cat === 'all' || knownCat(cat)) ? cat : 'all';
     state.sub = q.get('sub') || '';
     state.sort = ['featured', 'newest', 'price-asc', 'price-desc'].indexOf(q.get('sort')) > -1 ? q.get('sort') : 'featured';
     state.min = q.get('min') || ''; state.max = q.get('max') || ''; state.q = (q.get('q') || '').trim();
@@ -38,7 +40,7 @@
     }).join('');
   }
   function renderSubs() {
-    var cat = S.categoryOf(state.cat);
+    var cat = knownCat(state.cat) ? S.categoryOf(state.cat) : null;
     if (!cat) { subSel.innerHTML = '<option value="">All types</option>'; subSel.disabled = true; subSel.value = ''; return; }
     subSel.disabled = false;
     subSel.innerHTML = '<option value="">All types</option>' + cat.subs.map(function (s) {
@@ -56,7 +58,8 @@
     });
     if (state.sort === 'price-asc') list.sort(function (a, b) { return a.price - b.price; });
     else if (state.sort === 'price-desc') list.sort(function (a, b) { return b.price - a.price; });
-    else if (state.sort === 'newest') list.sort(function (a, b) { return b.added < a.added ? -1 : b.added > a.added ? 1 : 0; });
+    else if (state.sort === 'newest') list.sort(function (a, b) { return b.createdAt < a.createdAt ? -1 : b.createdAt > a.createdAt ? 1 : 0; });
+    else list.sort(function (a, b) { return (b.featured - a.featured) || (b.createdAt < a.createdAt ? -1 : b.createdAt > a.createdAt ? 1 : 0); });
     return list;
   }
 
@@ -64,6 +67,10 @@
     var list = filtered();
     grid.innerHTML = list.map(S.cardHtml).join('');
     countEl.textContent = 'Showing ' + list.length + (list.length === 1 ? ' product' : ' products') + (list.length !== S.PRODUCTS.length ? ' of ' + S.PRODUCTS.length : '');
+    var none = S.PRODUCTS.length === 0;
+    emptyEl.querySelector('h2').textContent = none ? 'Our collection is being updated' : 'No products match these filters';
+    emptyEl.querySelector('p').textContent = none ? 'New styles will appear here soon. Message us on WhatsApp to ask about what is in the store.' : 'Try a wider price range or another category.';
+    emptyEl.querySelector('button').classList.toggle('hidden', none);
     emptyEl.classList.toggle('hidden', list.length > 0);
     grid.classList.toggle('hidden', list.length === 0);
     var active = state.cat !== 'all' || state.sub || state.sort !== 'featured' || state.min !== '' || state.max !== '' || state.q;
@@ -72,32 +79,48 @@
   }
   function syncControls() { renderChips(); renderSubs(); sortSel.value = state.sort; minIn.value = state.min; maxIn.value = state.max; searchIn.value = state.q; }
 
-  chipsEl.addEventListener('click', function (e) {
-    var b = e.target.closest('button[data-cat]'); if (!b) return;
-    state.cat = b.dataset.cat; state.sub = '';
-    renderChips(); renderSubs(); render();
-    var nb = chipsEl.querySelector('[data-cat="' + state.cat + '"]'); if (nb) nb.focus({ preventScroll: true });
-  });
-  subSel.addEventListener('change', function () { state.sub = subSel.value; render(); });
-  sortSel.addEventListener('change', function () { state.sort = sortSel.value; render(); });
-  function priceChange() {
-    state.min = minIn.value.trim(); state.max = maxIn.value.trim();
-    var lo = state.min === '' ? null : Number(state.min), hi = state.max === '' ? null : Number(state.max);
-    var bad = lo !== null && hi !== null && lo > hi;
-    $('price-error').classList.toggle('hidden', !bad);
-    render();
-  }
-  searchIn.addEventListener('input', function () { state.q = searchIn.value.trim(); render(); });
-  minIn.addEventListener('input', priceChange); maxIn.addEventListener('input', priceChange);
-  clearBtns.forEach(function (b) {
-    b.addEventListener('click', function () {
-      state = { cat: 'all', sub: '', sort: 'featured', min: '', max: '', q: '' };
-      $('price-error').classList.add('hidden'); syncControls(); render();
+  function wire() {
+    if (wired) return; wired = true;
+    chipsEl.addEventListener('click', function (e) {
+      var b = e.target.closest('button[data-cat]'); if (!b) return;
+      state.cat = b.dataset.cat; state.sub = '';
+      renderChips(); renderSubs(); render();
+      var nb = chipsEl.querySelector('[data-cat="' + state.cat + '"]'); if (nb) nb.focus({ preventScroll: true });
     });
-  });
-
-  S.attachImageFallback(grid);
-  readUrl(); syncControls(); render();
-  if (wantSearchFocus) searchIn.focus();
-  window.addEventListener('popstate', function () { readUrl(); syncControls(); render(); });
+    subSel.addEventListener('change', function () { state.sub = subSel.value; render(); });
+    sortSel.addEventListener('change', function () { state.sort = sortSel.value; render(); });
+    function priceChange() {
+      state.min = minIn.value.trim(); state.max = maxIn.value.trim();
+      var lo = state.min === '' ? null : Number(state.min), hi = state.max === '' ? null : Number(state.max);
+      var bad = lo !== null && hi !== null && lo > hi;
+      $('price-error').classList.toggle('hidden', !bad);
+      render();
+    }
+    searchIn.addEventListener('input', function () { state.q = searchIn.value.trim(); render(); });
+    minIn.addEventListener('input', priceChange); maxIn.addEventListener('input', priceChange);
+    clearBtns.forEach(function (b) {
+      b.addEventListener('click', function () {
+        state = { cat: 'all', sub: '', sort: 'featured', min: '', max: '', q: '' };
+        $('price-error').classList.add('hidden'); syncControls(); render();
+      });
+    });
+    S.attachImageFallback(grid);
+    window.addEventListener('popstate', function () { readUrl(); syncControls(); render(); });
+  }
+  function init() {
+    wire(); readUrl(); syncControls(); render();
+    if (wantSearchFocus) searchIn.focus();
+  }
+  function showError() {
+    countEl.textContent = '';
+    grid.classList.remove('hidden'); emptyEl.classList.add('hidden');
+    grid.innerHTML = S.errorHtml('We could not load the collection');
+  }
+  function start() {
+    grid.classList.remove('hidden'); emptyEl.classList.add('hidden');
+    grid.innerHTML = S.skeletonCards(8); countEl.textContent = 'Loading collection\u2026';
+    S.ready.then(init, showError);
+  }
+  grid.addEventListener('click', function (e) { if (e.target.closest('[data-srg-retry]')) { S.load(); start(); } });
+  start();
 })();
